@@ -21,7 +21,79 @@
 
 深复制（深克隆） ：除了浅度克隆要克隆的值外，还负责克隆引用类型的数据，基本上就是被克隆实例所有的属性的数据都会被克隆出来。
 
-具体区别，参照代码实例。
+我们先来看看浅复制。
+
+```
+public class ShallowStudent implements Cloneable{
+    private String name;
+    private int age;
+    Professor p;
+
+    ShallowStudent(String name, int age, Professor p) {
+        this.name = name;
+        this.age = age;
+        this.p = p;
+    }
+
+    @Override
+    public Object clone() {
+        ShallowStudent o = null;
+        try {
+            // Object中的clone()识别出你要复制的是哪一个对象。
+            o = (ShallowStudent) super.clone();
+        } catch (CloneNotSupportedException e) {
+            System.out.println(e.toString());
+        }
+        return o;
+    }
+
+    public static void main(String[] args) {
+        Professor p = new Professor("jiangtao",35);
+        ShallowStudent s1 = new ShallowStudent("weijieming", 18,p);
+        System.out.println("复制前，原对象基本属性："+"name=" + s1.name + "," + "age=" + s1.age);
+        System.out.println("复制前，原对象引用属性："+"name=" + s1.p.name + "," + "age=" + s1.p.age);
+        ShallowStudent s2 = (ShallowStudent) s1.clone();
+        s2.name = "like";
+        s2.age = 20;
+        //修改学生2后，不影响学生1的值。
+        System.out.println("==========================================================");
+        System.out.println("复制后，原对象基本属性："+"name=" + s1.name + "," + "age=" + s1.age);
+        System.out.println("复制后，复制对象基本属性："+"name=" + s2.name + "," + "age=" + s2.age);
+
+        s2.p.name = "zhanghuanqi";
+        s2.p.age = 18;
+        //修改学生2引用对象后，影响学生1的值。
+        System.out.println("==========================================================");
+        System.out.println("复制后，原对象引用属性："+"name=" + s1.p.name + "," + "age=" + s1.p.age);
+        System.out.println("复制后，复制对象引用属性："+"name=" + s2.p.name + "," + "age=" + s2.p.age);
+    }
+}
+
+class Professor {
+    String name;
+    int age;
+
+    Professor(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+}
+
+```
+这段代码的输出如下：
+```
+复制前，原对象基本属性：name=weijieming,age=18
+复制前，原对象引用属性：name=jiangtao,age=35
+==========================================================
+复制后，原对象基本属性：name=weijieming,age=18
+复制后，复制对象基本属性：name=like,age=20
+==========================================================
+复制后，原对象引用属性：name=zhanghuanqi,age=18
+复制后，复制对象引用属性：name=zhanghuanqi,age=18
+
+```
+
+从这段代码可以看出，基本数据类型的变量都会重新创建，而引用类型，指向的还是原对象所指向的对象。
 
 
 
