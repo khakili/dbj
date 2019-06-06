@@ -6,7 +6,7 @@
 
 **什么是原型模式**
 
-原型模式（Prototype Pattern）的定义：用原型实例指定创建对象的种类，并且通过拷贝原型实例来创建新的对象。（Specify the kind of objects to create using a prototypical instance, and create new objects by copying this prototype. ）
+**原型模式（Prototype Pattern）**的定义：用原型实例指定创建对象的种类，并且通过拷贝原型实例来创建新的对象。（Specify the kind of objects to create using a prototypical instance, and create new objects by copying this prototype. ）
 
 这里面有几个关键词，”用原型实例“说明原型模式有一个前提，就是我得先有一个实例，”拷贝“说明是复制，而不是创建，”拷贝“这个词用Java翻译，就是clone，我们后面再说。
 
