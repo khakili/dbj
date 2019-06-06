@@ -27,7 +27,7 @@
 
 深复制（深克隆） ：除了浅度克隆要克隆的值外，还负责克隆引用类型的数据，基本上就是被克隆实例所有的属性的数据都会被克隆出来。
 
-我们先来看看浅复制。
+我们先来看看**浅复制**。
 
 ```
 public class ShallowStudent implements Cloneable{
@@ -101,7 +101,7 @@ class Professor {
 
 从这段代码可以看出，基本数据类型的变量都会重新创建，而引用类型，指向的还是原对象所指向的对象。
 
-我们再来看下深复制。
+我们再来看下**深复制**。
 ```
 public class DeepStudent implements Cloneable , Serializable {
     DeepProfessor p;
@@ -201,18 +201,129 @@ class DeepProfessor implements Cloneable,Serializable {
 
 **Client（客户类）**：让一个原型对象克隆自身从而创建一个新的对象，在客户类中只需要直接实例化或通过工厂方法等方式创建一个原型对象，再通过调用该对象的克隆方法即可得到多个相同的对象。由于客户类针对抽象原型类Prototype编程，因此用户可以根据需要选择具体原型类，系统具有较好的可扩展性，增加或更换具体原型类都很方便。
 
+下面我们来看实现的代码：
+
+**Prototype**
+
+```java
+public interface Prototype {
+    /**
+     * 克隆自身的方法
+     * @return 一个从自身克隆出来的对象
+     */
+    Prototype clone();
+}
+```
+
+**ConcretePrototype**
+
+```java
+class ConcretePrototypeA implements Prototype{
+    private String name = null;
+    private int age = 0;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    @Override
+    public Prototype clone() {
+        ConcretePrototypeA prototype = new ConcretePrototypeA();
+        prototype.setAge(this.age);
+        prototype.setName(this.name);
+        return prototype;
+    }
+
+    @Override
+    public String toString() {
+        return "ConcretePrototypeA{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                '}';
+    }
+}
+
+
+class ConcretePrototypeB implements Prototype{
+
+    private String name;
+
+    private int age;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    @Override
+    public Prototype clone() {
+        ConcretePrototypeB prototype = new ConcretePrototypeB();
+        prototype.setAge(this.age);
+        prototype.setName(this.name);
+        return prototype;
+    }
+
+    @Override
+    public String toString() {
+        return "ConcretePrototypeB{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                '}';
+    }
+}
+
+```
+
+**Client**
+
+```java
+public class Client {
+    public void client(Prototype prototype){
+        System.out.println("原对象：" + prototype + " hashcode：" + System.identityHashCode(prototype));
+        Prototype copyPrototype = prototype.clone();
+        System.out.println("克隆对象：" + copyPrototype+ " hashcode：" + System.identityHashCode(copyPrototype));
+    }
+
+    public static void main(String[] args) {
+        Client client = new Client();
+        ConcretePrototypeA concretePrototypeA = new ConcretePrototypeA();
+        concretePrototypeA.setName("jiangtao");
+        concretePrototypeA.setAge(50);
+        client.client(concretePrototypeA);
+
+        ConcretePrototypeB concretePrototypeB = new ConcretePrototypeB();
+        concretePrototypeB.setName("zhanghuanqi");
+        concretePrototypeB.setAge(18);
+        client.client(concretePrototypeB);
+    }
+}
+```
 
 
 
-
-
-
-
-
-## 什么时候可以派上用场
-> - 创建新对象成本较大（如初始化需要占用较长的时间，占用太多的CPU资源或网络资源），新的对象可以通过原型模式对已有对象进行复制来获得，如果是相似对象，则可以对其成员变量稍作修改。
-> - 可以使用深克隆的方式保存对象的状态，使用原型模式将对象复制一份并将其状态保存起来，以便在需要的时候使用（如恢复到某一历史状态），可辅助实现撤销操作
-> - 需要避免使用分层次的工厂类来创建分层次的对象，并且类的实例对象只有一个或很少的几个组合状态，通过复制原型对象得到新实例可能比使用构造函数创建一个新实例更加方便。
 
 ## 有何优缺点
 
@@ -226,5 +337,9 @@ class DeepProfessor implements Cloneable,Serializable {
 > - 在实现深克隆时需要编写较为复杂的代码，而且当对象之间存在多重的嵌套引用时，为了实现深克隆，每一层对象对应的类都必须支持深克隆，实现起来可能会比较麻烦。
 
 
+## 什么时候可以派上用场
+> - 创建新对象成本较大（如初始化需要占用较长的时间，占用太多的CPU资源或网络资源），新的对象可以通过原型模式对已有对象进行复制来获得，如果是相似对象，则可以对其成员变量稍作修改。
+> - 可以使用深克隆的方式保存对象的状态，使用原型模式将对象复制一份并将其状态保存起来，以便在需要的时候使用（如恢复到某一历史状态），可辅助实现撤销操作
+> - 需要避免使用分层次的工厂类来创建分层次的对象，并且类的实例对象只有一个或很少的几个组合状态，通过复制原型对象得到新实例可能比使用构造函数创建一个新实例更加方便。
 
 
