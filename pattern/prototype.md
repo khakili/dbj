@@ -201,9 +201,7 @@ class DeepProfessor implements Cloneable,Serializable {
 
 **Client（客户类）**：让一个原型对象克隆自身从而创建一个新的对象，在客户类中只需要直接实例化或通过工厂方法等方式创建一个原型对象，再通过调用该对象的克隆方法即可得到多个相同的对象。由于客户类针对抽象原型类Prototype编程，因此用户可以根据需要选择具体原型类，系统具有较好的可扩展性，增加或更换具体原型类都很方便。
 
-下面我们来看实现的代码：
-
-**Prototype**
+1. 先来看看原型接口的定义，示例代码如下：
 
 ```java
 public interface Prototype {
@@ -215,7 +213,7 @@ public interface Prototype {
 }
 ```
 
-**ConcretePrototype**
+2. 接下来看看具体的原型实现对象，示例代码如下：
 
 ```java
 class ConcretePrototypeA implements Prototype{
@@ -296,8 +294,9 @@ class ConcretePrototypeB implements Prototype{
 }
 
 ```
+为了跟上面原型模式的结构示意图保持一致，因此这两个具体的原型实现对象
 
-**Client**
+3. 再看看使用原型的客户端，示例代码如下：
 
 ```java
 public class Client {
@@ -321,9 +320,6 @@ public class Client {
     }
 }
 ```
-
-
-
 
 ## 有何优缺点
 
