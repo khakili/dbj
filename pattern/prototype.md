@@ -95,6 +95,93 @@ class Professor {
 
 从这段代码可以看出，基本数据类型的变量都会重新创建，而引用类型，指向的还是原对象所指向的对象。
 
+我们咋来看下深复制。
+```
+public class DeepStudent implements Cloneable , Serializable {
+    DeepProfessor p;
+
+    DeepStudent(DeepProfessor p) {
+        this.p = p;
+    }
+
+    @Override
+    public Object clone() {
+        DeepStudent o = null;
+        try {
+            o = (DeepStudent) super.clone();
+            //对引用的对象也进行复制
+            o.p = (DeepProfessor) p.clone();
+        } catch (CloneNotSupportedException e) {
+            System.out.println(e.toString());
+        }
+        return o;
+    }
+
+    public Object deepClone(Object o) {
+        try{
+            //将对象写到流里
+            ByteArrayOutputStream bo=new ByteArrayOutputStream();
+            ObjectOutputStream oo=new ObjectOutputStream(bo);
+            oo.writeObject(o);
+            //从流里读出来
+            ByteArrayInputStream bi=new ByteArrayInputStream(bo.toByteArray());
+            ObjectInputStream oi=new ObjectInputStream(bi);
+            return(oi.readObject());
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static void main(String[] args) {
+        DeepProfessor p = new DeepProfessor("jiangtao", 50);
+        DeepStudent s1 = new DeepStudent(p);
+        System.out.println("复制前，原对象引用属性："+"name=" + s1.p.name + "," + "age=" + s1.p.age);
+        DeepStudent s2 = (DeepStudent) s1.clone();
+        s2.p.name = "zhanghuanqi";
+        s2.p.age = 18;
+        DeepStudent s3 = (DeepStudent) s1.deepClone(s1);
+        s3.p.name = "like";
+        s3.p.age = 18;
+        System.out.println("==========================================================");
+        System.out.println("复制后，原对象基本属性："+"name=" + s1.p.name + "," + "age=" + s1.p.age);
+        System.out.println("复制后，s2引用属性："+"name=" + s2.p.name + "," + "age=" + s2.p.age);
+        System.out.println("复制后，s3引用属性："+"name=" + s3.p.name + "," + "age=" + s3.p.age);
+    }
+}
+
+class DeepProfessor implements Cloneable,Serializable {
+    String name;
+    int age;
+
+    DeepProfessor(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    @Override
+    public Object clone() {
+        DeepProfessor o = null;
+        try {
+            o = (DeepProfessor)super.clone();
+        } catch(CloneNotSupportedException e) {
+            System.out.println(e.toString());
+        }
+        return o;
+    }
+}
+```
+输出如下：
+```
+复制前，原对象引用属性：name=jiangtao,age=50
+==========================================================
+复制后，原对象基本属性：name=jiangtao,age=50
+复制后，s2引用属性：name=zhanghuanqi,age=18
+复制后，s3引用属性：name=like,age=18
+```
+与浅复制相比，DeepProfessor对象实现了Cloneable接口，所以DeepStudent对象在克隆时，进行了深复制。深复制后，在内存中重新创建了一个新的DeepProfessor对象。
+
+同时，还有另外一种方式实现深复制，用IO读写的方式，直接在内存中分配了一块新的内存，将原对象在新的空间创建。
 
 
 
