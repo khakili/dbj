@@ -95,7 +95,7 @@ class Professor {
 
 从这段代码可以看出，基本数据类型的变量都会重新创建，而引用类型，指向的还是原对象所指向的对象。
 
-我们咋来看下深复制。
+我们再来看下深复制。
 ```
 public class DeepStudent implements Cloneable , Serializable {
     DeepProfessor p;
@@ -183,7 +183,11 @@ class DeepProfessor implements Cloneable,Serializable {
 
 同时，还有另外一种方式实现深复制，用IO读写的方式，直接在内存中分配了一块新的内存，将原对象在新的空间创建。
 
+原型模式从某种意义上说，就像是new操作，在前面的例子实现中，克隆方法就是使用new来实现的，但请注意，只是“类似于new”而不是“就是new”。
 
+克隆方法和new操作最明显的不同就在于：
+
+> new一个对象实例，一般属性是没有值的，或者是只有默认值；如果是克隆得到的一个实例，通常属性是有值的，属性的值就是原型对象实例在克隆的时候，原型对象实例的属性的值。
 
 
 
