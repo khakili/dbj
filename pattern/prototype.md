@@ -307,16 +307,16 @@ public class Client {
     }
 
     public static void main(String[] args) {
-        Client client = new Client();
+        Client prototypeClient = new Client();
         ConcretePrototypeA concretePrototypeA = new ConcretePrototypeA();
         concretePrototypeA.setName("jiangtao");
         concretePrototypeA.setAge(50);
-        client.client(concretePrototypeA);
+        prototypeClient.client(concretePrototypeA);
 
         ConcretePrototypeB concretePrototypeB = new ConcretePrototypeB();
         concretePrototypeB.setName("zhanghuanqi");
         concretePrototypeB.setAge(18);
-        client.client(concretePrototypeB);
+        prototypeClient.client(concretePrototypeB);
     }
 }
 ```
