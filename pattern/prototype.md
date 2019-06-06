@@ -1,46 +1,33 @@
-# 协议
-## 1、请求：需要进行签名
-惠商+微信公众号受理平台与第三方平台采用公网连接，一方向另一方发送请求数据，并同步等待另一方处理完毕之后返回的响应数据，报文采用标准的http协议包格式(标准http包头+JSON包体)
-包体示例：
-```json
-{
-	"amount": "8888",
-	"goodsInfo": "真实的全流程测试",
-	"sign": "FloG4isf+mSskb4AcF8jcNjX7zbbx1UUGfKUHUt7DWfvF5U1MxX4JcMmGjCnF+epvCjCKQnT0jodoahcCZ7Eqgiyzj/GQtO7JyAtjxEvU8GwzdkrsErpe+IzfACBDbn7N6+mSKJ5DY+txicsyZh/97ZxOq4SJIbI1FyMY37kPgU=",
-	"goodsId": "真实的全流程测试",
-	"mediaNo": "6255552359041786959",
-	"payType": "WX",
-	"proxyId": "0048",
-	"subMerId": "30000095",
-	"mediaType": "05"
-}
-```
-注意：
-1. 报文具体内容包含在context内
-2. 参数的排列顺序应该按照接口中定义的参数名的顺序进行排列
+当我们要学习原型模式或者其他的设计模式时，通常需要问几个问题
+> - 什么是原型模式
+> - 什么时候可以派上用场
+> - 具体如何实现
+> - 有何优缺点
 
-## 2、响应：需要进行验签
+**什么是原型模式**
+原型模式（Prototype Pattern）的定义：用原型实例指定创建对象的种类，并且通过拷贝原型实例来创建新的对象。（Specify the kind of objects to create using a prototypical instance, and create new objects by copying this prototype. ）
 
-包体示例：
-```json
-{
-	"sign": "KLF/FfpQpff7SKw6x+3hyc8fp8UMtvaHcGeMX0hcJtM/IvU6LMQbuF0EEMbL0pud15uc8q0+wTBF4Dbt2VV6lsqG3H4cfFQSmf3k8Q2Tn4Zx9tw91k0fmqHh5kAR2ynjCdm9Bxl9Vjts5LH6mWj4rvqUTYQeW1RxJHEAJmvSOpQ=",
-	"payAmount": "000000008888",
-	"amount": "8888",
-	"retCode": "0000",
-	"tradeNo": "1709964000006324",
-	"partnerOrderId": "HSAPI201709141745447451850",
-	"Memo": "交易成功",
-	"paySeq": "418813867389091730800013",
-	"platDate": "20170914",
-	"coupAmount": "0",
-	"payDay": "20170914"
-}
-```
-注意：
-1. 交易的结果无论成功还是失败，响应的http报文头status均为 200OK；
-2. 报文体为JSON格式的UTF-8编码字节流
-3. 参数的排列顺序应该按照接口中定义的参数名的顺序进行排列，没有值的参数也需要传递，值指定为空串。
+这里面有几个关键词，”用原型实例“说明原型模式有一个前提，就是我得先有一个实例，”拷贝“说明是复制，而不是创建，”拷贝“这个词用Java翻译，就是clone，我们后面再说。
+
+
+
+我们带着第二个问题，先来看第三个问题：**原型模式怎样来实现**
+
+在讨论具体事前之前，我们先来看两个概念：浅复制和深复制
+
+浅复制（浅克隆） ：只负责克隆按值传递的数据（比如：基本数据类型、String类型）。
+
+深复制（深克隆） ：除了浅度克隆要克隆的值外，还负责克隆引用类型的数据，基本上就是被克隆实例所有的属性的数据都会被克隆出来。
+
+具体区别，参照代码实例。
+
+![](../images/pattern_uml.png)
+
+
+
+
+
+
 
 
 
