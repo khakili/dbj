@@ -1,3 +1,3 @@
 * **设计模式**
     * [原型模式](pattern/prototype.md)
-    * [测试](doc/basetype.md)
+    * [基本数据类型剖析](doc/basetype.md)
