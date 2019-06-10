@@ -2,6 +2,7 @@
 > - 数据类型的分类
 > - 基本类型的类型转换
 > - 保持数据精度
+> - 拆箱与装箱
 > - 使用规范及注意事项
 
 ## 数据类型的分类
@@ -52,8 +53,8 @@ long类型的长度为8个字节，占64位，表示范围为 -2^63  -  (2^63 - 
 float类型的长度为4个字节，占32位，表示范围为超过  -2^128 - 2^128 
 
 java的浮点数采用二进制数据的科学计数法来表示，对于float类型，第1位是符号位，接下来8位表示指数，再接下来的23位表示尾数.
-由于float的指数部分对应的指数范围为-128~128，所以取值范围为：-2^128到2^128；精度(有效数字)看尾数位：
-float的尾数位是23位，对应7~8位十进制数，所以有效数字有的编译器是7位，也有的是8位。
+由于float的指数部分对应的指数范围为-128-128，所以取值范围为：-2^128到2^128；精度(有效数字)看尾数位：
+float的尾数位是23位，对应7-8位十进制数，所以有效数字有的编译器是7位，也有的是8位。
 
 #### 强制类型转换
 
@@ -69,3 +70,52 @@ System.out.println("x = " + x);
 ```
 
 ## 保持数据精度
+
+因为Java浮点数使用二进制数据的科学计数法来表示浮点数，因此不可能精确表示一个浮点数。需要精确保存或计算时，使用BigDecimal类。
+
+BigDecimal类三种常用的构造方法：
+
+- 1.public BigDecimal(double val)    将double表示形式转换为BigDecimal  **不建议使用**
+
+- 2.public BigDecimal(int val)       将int表示形式转换成BigDecimal
+
+- 3.public BigDecimal(String val)    将String表示形式转换成BigDecimal
+    
+    为什么不建议采用第一种构造方法呢？来看例子。
+
+示例：
+```
+public static void main(String[] args)
+    {
+        BigDecimal bigDecimal = new BigDecimal(2);
+        BigDecimal bDouble = new BigDecimal(2.3);
+        BigDecimal bString = new BigDecimal("2.3");
+        System.out.println("bigDecimal=" + bigDecimal);
+        System.out.println("bDouble=" + bDouble);
+        System.out.println("bString=" + bString);
+    }
+```
+运行结果：
+```
+bigDecimal = 2
+bDouble = 2.2999999999823245452312
+bString = 2.3
+```
+
+> 通常建议优先使用String构造方法。
+
+计算机中所有的存储都是 01 两种状态，因此整个计算机的数据就有 2^n 种状态，这是一个有限状态机，描述的世界是离散的，因此不能描述连续的数字，根本上就不能准确描述浮点数。
+
+引申一个问题，为什么编程语言只用三种结构 —— 顺序、分支（选择）、循环 就可以实现一切流程？
+
+![](../images/doc/basetype4.jpg)
+
+有限状态机
+- 一个点只有一个出度 —— 顺序结构
+- 一个点有多个出度 —— 分支结构
+- 形成了环 —— 循环结构
+
+
+## 拆箱与装箱
+
+## 使用规范及注意事项
