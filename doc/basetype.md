@@ -16,3 +16,6 @@ java支持的数据类型分为两类：基本数据类型 和 引用类型。
 
 ![](../images/basetype1.jpg)
 
+**基本数据类型和引用类型的区别**
+
+![](../images/basetype2.jpg)
