@@ -193,7 +193,7 @@ class DeepProfessor implements Cloneable,Serializable {
 
 理解了浅复制和深复制，那么我们开始看一下原型模式的实现
 
-![](../images/pattern_uml.png)
+![](../images/pattern/pattern_uml.png)
 
 原型模式中共有三个角色：
 
