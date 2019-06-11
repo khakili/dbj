@@ -189,3 +189,143 @@ class BeiyuanJianbingShop extends JianbingShop{
 从类图中我们可以看到，抽象的工厂类提供了一个创建对象的方法的接口，也成为"工厂方法"。
 
 现在，杰明看老姜干的风风火火，想在西直门也开一家店，应该怎么做？
+
+## 抽象工厂模式
+
+有一天，老姜打电话给我说："桓齐，你给我店里送的原料太贵了啊，我不从你这进了，我都少挣好几十万了。"我说："那你随便喽。"然后老姜就开始找原材料供应商。我们首先得知道我们每天都需要买啥是吧。
+
+```java
+public interface IngredientFactory {
+    String createJidan();
+    String createNiurou();
+    String createPeigen();
+    String createHuotui();
+}
+```
+我们看到了，我开店必须的得买鸡蛋、牛肉、培根、火腿等材料，那起码这个供应商要具备这些能力才行。
+
+牡丹园店和北苑店都去哪进呢？
+
+```java
+class MudanyuanIngredientFactory implements IngredientFactory{
+
+    @Override
+    public String createJidan() {
+        System.out.println("从牡丹园菜市场进的新鲜鸡蛋");
+        return "牡丹园鸡蛋";
+    }
+
+    @Override
+    public String createNiurou() {
+        System.out.println("从牡丹园菜市场进的新鲜牛肉");
+        return "牡丹园牛肉";
+    }
+
+    @Override
+    public String createPeigen() {
+        System.out.println("从牡丹园菜市场进的新鲜培根");
+        return "牡丹园培根";
+    }
+
+    @Override
+    public String createHuotui() {
+        System.out.println("从牡丹园菜市场进的新鲜火腿");
+        return "牡丹园火腿";
+    }
+}
+
+class BeiyuanIngredientFactory implements IngredientFactory{
+    @Override
+    public String createJidan() {
+        System.out.println("从北苑菜市场进的一般鸡蛋");
+        return "北苑鸡蛋";
+    }
+
+    @Override
+    public String createNiurou() {
+        System.out.println("从北苑菜市场进的一般牛肉");
+        return "北苑牛肉";
+    }
+
+    @Override
+    public String createPeigen() {
+        System.out.println("从北苑菜市场进的一般培根");
+        return "北苑培根";
+    }
+
+    @Override
+    public String createHuotui() {
+        System.out.println("从北苑菜市场进的一般火腿");
+        return "北苑火腿";
+    }
+}
+```
+
+现在由于原材料变了，我们不得不重新开始做煎饼果子了。
+
+```java
+public class NewJidanJianbing extends Jianbing {
+    private IngredientFactory ingredientFactory;
+
+    public NewJidanJianbing(IngredientFactory ingredientFactory){
+        this.ingredientFactory = ingredientFactory;
+    }
+
+    @Override
+    public void prepare(){
+        System.out.println("准备"+ingredientFactory.createJidan());
+    }
+
+    @Override
+    public String toString() {
+        return "从不同原料工厂进材料做的鸡蛋煎饼";
+    }
+}
+```
+
+新的煎饼果子可以根据不同原料工厂提供的原料来制作了。
+
+最后，我们来看看老姜到底怎么把这个煎饼果子做出来：
+
+```java
+public class BeiyuanJianbingShop extends JianbingShop{
+
+    private IngredientFactory ingredientFactory;
+
+    BeiyuanJianbingShop(){
+        ingredientFactory = new BeiyuanIngredientFactory();
+    }
+
+    @Override
+    public  Jianbing createJianbing(String jianbingName){
+        if(jianbingName.equals("鸡蛋")){
+            return new NewJidanJianbing(ingredientFactory);
+        }else if(jianbingName.equals("牛肉")){
+            return new NewNiurouJianbing(ingredientFactory);
+        }else{
+            System.out.println("老铁，" + jianbingName + "煎饼做不了啊");
+            return null;
+        }
+    }
+
+    public static void main(String[] args) {
+        String jianbing = "鸡蛋";
+        BeiyuanJianbingShop jianbingShop = new BeiyuanJianbingShop();
+        jianbingShop.orderJianbing(jianbing);
+    }
+}
+```
+
+这一连串的代码改变，我们到底做了些什么？
+
+我们引入了新类型的工厂，也就是所谓的**抽象工厂**，来创建煎饼果子原料。通过抽象工厂所提供的接口，我们的代码从实际工厂解耦，以便在不同上下文中实现各式各样的工厂，制作出不同的产品。
+
+因为代码从实际的产品中解耦了，所以我们可以替换不同的工厂来取得不同的行为。
+
+![](../images/pattern/abstract_factory_uml.png)
+
+**抽象工厂模式**（Abstract Factory Pattern）的定义：提供一个接口，用于创建相关或依赖对象的家族，而不需要明确指定具体类。
+
+抽象工厂的方法经常以工厂方法的方式实现，抽象工厂的任务是定义一个负责创建一组产品的接口。这个接口内的每个方法都负责创建一个具体产品。
+
+
