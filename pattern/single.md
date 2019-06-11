@@ -102,6 +102,7 @@ com.example.factory_demo.singleton.SingleSequenceFacory@4a574795
 >优势：节省内存空间，什么时候时候什么时候初始化
 >实现难度：易
 >是否线程安全：否
+
 ```
 /**
  * @author jiangtao
