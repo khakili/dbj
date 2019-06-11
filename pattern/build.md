@@ -22,6 +22,8 @@
 
 ## 如何实现一个建造者模式
 
+```
+
 /**
  * @author jiangtao
  * @version V1.0
@@ -402,9 +404,11 @@ public class ResponseBuilderTest {
         System.out.println("微信响应报文："+wxResponseBody.toString());
     }
 }
-
 ```
+
+
 这段代码的输出如下：
+```
 
 银行卡响应报文：
 
