@@ -430,3 +430,329 @@ public class ResponseBuilderTest {
 缺点
 >- 产品必须有共同点，范围有限制
 >- 如内部变化复杂，会有很多的建造类
+
+## 扩展建造者的经典模式
+```
+package com.example.factory_demo.builder.kfc;
+
+/**
+ * @author jiangtao
+ * @version V1.0
+ * @Description：商品列表 <p>创建日期：2019/6/12 </p>
+ * @see
+ */
+public interface ProductItem {
+
+    /**
+     * 商品列表
+     * @return
+     */
+    public String productName();
+
+    /**
+     * 商品包装
+     */
+    public ProductPackage packageing();
+
+    /**
+     * 商品价格
+     * @return
+     */
+    public float price();
+}
+
+package com.example.factory_demo.builder.kfc;
+
+/**
+ * 打包方式：纸袋包装，水瓶包装
+ */
+public interface ProductPackage {
+
+    public String packages();
+}
+
+package com.example.factory_demo.builder.kfc;
+
+/**
+ * @author jiangtao
+ * @version V1.0
+ * @Description：水瓶包装 <p>创建日期：2019/6/12 </p>
+ * @see
+ */
+public class BottlePackage implements ProductPackage {
+    @Override
+    public String packages() {
+        return "水瓶包装";
+    }
+}
+
+package com.example.factory_demo.builder.kfc;
+
+/**
+ * @author jiangtao
+ * @version V1.0
+ * @Description：纸袋包装 <p>创建日期：2019/6/12 </p>
+ * @see
+ */
+public class WapperPackage implements ProductPackage {
+    @Override
+    public String packages() {
+        return "纸袋包装";
+    }
+}
+
+
+package com.example.factory_demo.builder.kfc;
+
+/**
+ * @author jiangtao
+ * @version V1.0
+ * @Description：汉堡的抽象类 <p>创建日期：2019/6/12 </p>
+ * @see
+ */
+public abstract class Burger implements ProductItem{
+
+    /**
+     * 定义包含的包装是什么
+     * @return
+     */
+    @Override
+    public ProductPackage packageing(){
+        return new WapperPackage();
+    }
+
+    /**
+     * 抽象定义汉堡的价格
+     * @return
+     */
+    public abstract float price();
+}
+
+package com.example.factory_demo.builder.kfc;
+
+
+/**
+ * @author jiangtao
+ * @version V1.0
+ * @Description：定义饮品的包装方式 <p>创建日期：2019/6/12 </p>
+ * @see
+ */
+public abstract class ColdDrink implements ProductItem{
+
+    /**
+     * 定义饮品的包装方式统一为能装水的杯子
+     * @return
+     */
+    @Override
+    public ProductPackage packageing(){
+        return new BottlePackage();
+    }
+
+    /**
+     * 定义饮品的价格
+     * @return
+     */
+    public abstract float price();
+}
+
+package com.example.factory_demo.builder.kfc;
+
+/**
+ * @author jiangtao
+ * @version V1.0
+ * @Description：肉食汉堡 <p>创建日期：2019/6/12 </p>
+ * @see
+ */
+public class BeefBurger extends Burger{
+    @Override
+    public String productName() {
+        return "香辣鸡腿堡";
+    }
+
+    @Override
+    public float price() {
+        return 25.0f;
+    }
+}
+
+package com.example.factory_demo.builder.kfc;
+
+/**
+ * @author jiangtao
+ * @version V1.0
+ * @Description：素食汉堡 <p>创建日期：2019/6/12 </p>
+ * @see
+ */
+public class VegetableBurger extends Burger {
+    @Override
+    public String productName() {
+        return "无肉汉堡(友情提示不吃，但是几个实惠)";
+    }
+
+    @Override
+    public float price() {
+        return 15.0f;
+    }
+}
+
+package com.example.factory_demo.builder.kfc;
+
+/**
+ * @author jiangtao
+ * @version V1.0
+ * @Description：可口可乐的包装和价格 <p>创建日期：2019/6/12 </p>
+ * @see
+ */
+public class Coke extends ColdDrink {
+    @Override
+    public String productName() {
+        return "可口可乐.店长推荐，你指的拥有";
+    }
+
+    @Override
+    public float price() {
+        return 11.0f;
+    }
+}
+
+package com.example.factory_demo.builder.kfc;
+
+/**
+ * @author jiangtao
+ * @version V1.0
+ * @Description：百事可乐的包装和价格 <p>创建日期：2019/6/12 </p>
+ * @see
+ */
+public class Pepsi extends ColdDrink {
+    @Override
+    public String productName() {
+        return "百事可乐.本人不喜欢";
+    }
+
+    @Override
+    public float price() {
+        return 11.0f;
+    }
+}
+
+package com.example.factory_demo.builder.kfc;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+
+/**
+ * @author jiangtao
+ * @version V1.0
+ * @Description：购买的尚品列表 <p>创建日期：2019/6/12 </p>
+ * @see
+ */
+public class ProductItems {
+    //本次购买的商品列表
+    private List<ProductItem> productItemList = new ArrayList<>();
+
+    /**
+     * 添加购买的商品
+     * @param productItem
+     */
+    public  void add(ProductItem productItem){
+        productItemList.add(productItem);
+    }
+
+    /**
+     * 获取商品的总价格
+     * @return
+     */
+    public float totalPrice(){
+        AtomicReference<Float> prices = new AtomicReference<>(0f);
+        productItemList.forEach((ProductItem productItem)->{
+            prices.updateAndGet(v -> new Float((float) (v + productItem.price())));
+        });
+        return prices.get();
+    }
+
+    /**
+     * 打印购买结果
+     */
+    public void print(){
+        productItemList.forEach((ProductItem productItem)->{
+            System.out.print("item name:"+productItem.productName());
+            System.out.print(" , package:"+productItem.packageing().packages());
+            System.out.println(", price:"+productItem.price());
+        });
+    }
+}
+
+package com.example.factory_demo.builder.kfc;
+
+/**
+ * @author jiangtao
+ * @version V1.0
+ * @Description：构建商品套餐 <p>创建日期：2019/6/12 </p>
+ * @see
+ */
+public class ProductItemsBuilder {
+
+    /**
+     * 购买香辣鸡腿堡的可乐套餐
+     * @return
+     */
+    public ProductItems beefAndCokeItems(){
+        ProductItems productItems = new ProductItems();
+        productItems.add(new BeefBurger());
+        productItems.add(new Coke());
+        return productItems;
+    }
+
+    /**
+     * 购买素食汉堡和可乐套餐
+     * @return
+     */
+   public ProductItems vegetableAndCokeItemd(){
+        ProductItems productItems = new ProductItems();
+        productItems.add(new VegetableBurger());
+        productItems.add(new Coke());
+        return productItems;
+   }
+}
+
+package com.example.factory_demo.builder.kfc;
+
+/**
+ * @author jiangtao
+ * @version V1.0
+ * @Description：jt的中午选择不同的套餐，需要花费的金额是多少 <p>创建日期：2019/6/12 </p>
+ * @see
+ */
+public class JtSkyDemo {
+
+    public static void main(String[] args) {
+        System.out.println("本人想吃一个肉汉堡+可乐，计算一下花费金额");
+        ProductItemsBuilder productItemsBuilder = new ProductItemsBuilder();
+        ProductItems productItems = productItemsBuilder.beefAndCokeItems();
+        productItems.print();
+        System.out.println("本次购买的肉汉堡花费="+productItems.totalPrice());
+        System.out.println();
+        System.out.println("本人想吃一个素食汉堡+可乐，计算一下花费金额");
+        ProductItemsBuilder productItemsBuilder1 = new ProductItemsBuilder();
+        ProductItems productItems1 = productItemsBuilder1.vegetableAndCokeItemd();
+        productItems1.print();
+        System.out.println("本人购买的素汉堡="+productItems1.totalPrice());
+    }
+}
+
+```
+根据自己中午的意愿随意选择要吃的商品，最终会给输出一个购买商品的列表和你要花费的金额
+
+```
+本人想吃一个肉汉堡+可乐，计算一下花费金额
+item name:香辣鸡腿堡 , package:纸袋包装, price:25.0
+item name:可口可乐.店长推荐，你指的拥有 , package:水瓶包装, price:11.0
+本次购买的肉汉堡花费=36.0
+
+本人想吃一个素食汉堡+可乐，计算一下花费金额
+item name:无肉汉堡(友情提示不吃，但是几个实惠) , package:纸袋包装, price:15.0
+item name:可口可乐.店长推荐，你指的拥有 , package:水瓶包装, price:11.0
+本人购买的素汉堡=26.0
+
+```
